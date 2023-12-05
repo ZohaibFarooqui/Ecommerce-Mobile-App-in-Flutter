@@ -6,7 +6,7 @@ import 'package:ecommerce/users/fragments/dashboard_of_fragments.dart';
 import 'package:ecommerce/users/fragments/home_fragment_screen.dart';
 import 'package:ecommerce/users/userPreferences/user_preferences.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+// import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
 import 'package:ecommerce/users/userPreferences/current_user.dart';
@@ -52,13 +52,13 @@ class _LoginScreenState extends State<LoginScreen> {
             // Set the user in the CurrentUser instance
             _currentUser.setUser(loggedInUser);
 
-            Fluttertoast.showToast(msg: "Login Successfully.");
+            // Fluttertoast.showToast(msg: "Login Successfully.");
             Get.off(DashboardOfFragments());
             break;
           }
         }
       } else {
-        Fluttertoast.showToast(msg: "Email or password cannot be empty.");
+        // Fluttertoast.showToast(msg: "Email or password cannot be empty.");
       }
     } catch (e) {
       print('Error: $e');

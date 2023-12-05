@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'package:ecommerce/mysql.dart';
 import 'package:ecommerce/users/authentication/signup_screen.dart';
+import 'package:ecommerce/users/fragments/admin_dashboard_of_fragments.dart';
+import 'package:ecommerce/users/fragments/admin_home_fragment_screen.dart';
 import 'package:ecommerce/users/fragments/dashboard_of_fragments.dart';
 import 'package:ecommerce/users/fragments/home_fragment_screen.dart';
 import 'package:ecommerce/users/userPreferences/user_preferences.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+ // import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
 import 'package:http/http.dart' as http;
@@ -47,25 +49,25 @@ class _AdminScreenState extends State<AdminScreen> {
             //print(row.assoc()['user_name']);
           }
           else{
-            Fluttertoast.showToast(msg: "Incorrect Email");
+            // Fluttertoast.showToast(msg: "Incorrect Email");
           }
           String pass = row.assoc()['admin_password'] ?? '';
           print(pass);
           if (pass == passwordController.text) {
             print("hey");
-            Fluttertoast.showToast(msg: "Admin Logged In Successfully.");
-            Get.off(DashboardOfFragments());
+            // Fluttertoast.showToast(msg: "Admin Logged In Successfully.");
+            Get.off(AdminDashboardOfFragments());
             // Add logic for successful login
             break; // Exit the loop since we found a matching email
             //print(row.assoc()['user_name']);
           }
           else{
-            Fluttertoast.showToast(msg: "Incorrect Password");
+            // Fluttertoast.showToast(msg: "Incorrect Password");
           }
         }
       } else {
         // Handle the case where emailController is empty
-        Fluttertoast.showToast(msg: "Email or password cannot be empty.");
+        // Fluttertoast.showToast(msg: "Email or password cannot be empty.");
       }
     }
 
@@ -133,7 +135,7 @@ class _AdminScreenState extends State<AdminScreen> {
                   const Padding(
                     padding: EdgeInsets.only(top: 5),
                     child: Text(
-                      'Sign In to the',
+                      'Admin Sign in',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 20,

@@ -1,3 +1,5 @@
+// product.dart
+
 import 'dart:typed_data';
 
 class Product {
@@ -7,7 +9,6 @@ class Product {
   final String details;
   final String size;
   final int price;
-  final Uint8List productImage;
 
   Product({
     required this.productId,
@@ -16,7 +17,6 @@ class Product {
     required this.details,
     required this.size,
     required this.price,
-    required this.productImage,
   });
 
   factory Product.empty() {
@@ -27,9 +27,9 @@ class Product {
       details: '',
       size: '',
       price: 0,
-      productImage: Uint8List(0),
     );
   }
+
   factory Product.defaultProduct() {
     return Product(
       productId: 0,
@@ -38,7 +38,6 @@ class Product {
       details: 'Default Details',
       size: 'Default Size',
       price: 0,
-      productImage: Uint8List(0), // You may adjust this based on your default image
     );
   }
 }

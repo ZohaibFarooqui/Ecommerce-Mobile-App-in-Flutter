@@ -1,15 +1,9 @@
-// home_fragment_screen.dart
-
 import 'dart:async';
-import 'dart:convert';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:ecommerce/mysql.dart';
 import 'product_details_screen.dart';
 import 'product.dart';
 import 'dart:io';
-import 'dart:typed_data';
-
 
 class ProductItem extends StatelessWidget {
   final Product product;
@@ -37,7 +31,7 @@ class ProductItem extends StatelessWidget {
               height: 120,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: MemoryImage(product.productImage),
+                  image: AssetImage('lib/assets/images/image${product.productId}.jpg'),
                   fit: BoxFit.cover,
                 ),
                 borderRadius: BorderRadius.circular(10),
@@ -63,8 +57,9 @@ class HomeFragmentScreen extends StatefulWidget {
 class _HomeFragmentScreenState extends State<HomeFragmentScreen> {
   late PageController _pageController;
   int _currentPage = 0;
-  bool _showMenu = false;
   List<Product> products = [];
+  TextEditingController searchController = TextEditingController();
+  List<Product> filteredProducts = [];
 
   @override
   void initState() {
@@ -84,6 +79,10 @@ class _HomeFragmentScreenState extends State<HomeFragmentScreen> {
         curve: Curves.easeInOut,
       );
     });
+
+    searchController.addListener(() {
+      filterProducts();
+    });
   }
 
   void fetchProducts() async {
@@ -92,41 +91,32 @@ class _HomeFragmentScreenState extends State<HomeFragmentScreen> {
       var query = 'SELECT * FROM ecommerce.product';
       var productsData = await mysql.getResults(query);
 
-      if (productsData != null) {
-        setState(() {
-          products = productsData.map((product) {
-            try {
-              String? imagePath = product.assoc()['product_image_path']?.toString();
-              Uint8List imageUint8List = Base64Decoder().convert(imagePath!);
-
-              return Product(
-                productId: int.tryParse(product.assoc()['product_id'].toString()) ?? 0,
-                productName: product.assoc()['product_name']?.toString() ?? '',
-                brand: product.assoc()['brand']?.toString() ?? '',
-                details: product.assoc()['details']?.toString() ?? '',
-                size: product.assoc()['size']?.toString() ?? '',
-                price: int.tryParse(product.assoc()['price'].toString()) ?? 0,
-                productImage: imageUint8List,
-              );
-            } catch (e) {
-              print('Error processing product: $e');
-              return Product.defaultProduct();
-            }
-          }).toList();
-        });
-      } else {
-        print('No products data.');
-      }
+      setState(() {
+        products = productsData.map((product) {
+          return Product(
+            productId: int.tryParse(product.assoc()['product_id'].toString()) ?? 0,
+            productName: product.assoc()['product_name']?.toString() ?? '',
+            brand: product.assoc()['brand']?.toString() ?? '',
+            details: product.assoc()['details']?.toString() ?? '',
+            size: product.assoc()['size']?.toString() ?? '',
+            price: int.tryParse(product.assoc()['price'].toString()) ?? 0,
+          );
+        }).toList();
+      });
     } catch (e) {
       print('Error fetching products: $e');
     }
   }
 
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
+  void filterProducts() {
+    String query = searchController.text.toLowerCase();
+    setState(() {
+      filteredProducts = products.where((product) {
+        return product.productName.toLowerCase().contains(query) ||
+            product.brand.toLowerCase().contains(query) ||
+            product.details.toLowerCase().contains(query);
+      }).toList();
+    });
   }
 
   Widget bannerContainer({required String imagePath}) {
@@ -154,8 +144,8 @@ class _HomeFragmentScreenState extends State<HomeFragmentScreen> {
             children: [
               bannerContainer(imagePath: 'lib/assets/images/3.jpg'),
               bannerContainer(imagePath: 'lib/assets/images/4.png'),
-              bannerContainer(imagePath: 'lib/assets/images/1.jpg'),
               bannerContainer(imagePath: 'lib/assets/images/5092428.jpg'),
+              // bannerContainer(imagePath: 'assets/image5.png'),
             ],
           ),
         ),
@@ -171,13 +161,9 @@ class _HomeFragmentScreenState extends State<HomeFragmentScreen> {
       title: Row(
         children: [
           IconButton(
-            icon: _showMenu
-                ? Icon(Icons.list, color: Colors.black)
-                : Icon(Icons.menu, color: Colors.black),
+            icon: Icon(Icons.menu, color: Colors.black),
             onPressed: () {
-              setState(() {
-                _showMenu = !_showMenu;
-              });
+              // Handle menu button press
             },
           ),
           Spacer(),
@@ -194,7 +180,19 @@ class _HomeFragmentScreenState extends State<HomeFragmentScreen> {
   }
 
   Widget buildProducts() {
-    if (products.isNotEmpty) {
+    if (filteredProducts.isNotEmpty) {
+      return SingleChildScrollView(
+        child: Wrap(
+          spacing: 16,
+          runSpacing: 16,
+          children: filteredProducts.map((product) {
+            return ProductItem(
+              product: product,
+            );
+          }).toList(),
+        ),
+      );
+    } else if (products.isNotEmpty) {
       return SingleChildScrollView(
         child: Wrap(
           spacing: 16,
@@ -245,6 +243,7 @@ class _HomeFragmentScreenState extends State<HomeFragmentScreen> {
               Padding(
                 padding: EdgeInsets.only(top: 10, right: 50),
                 child: TextField(
+                  controller: searchController,
                   decoration: InputDecoration(
                     fillColor: Colors.grey.shade100,
                     filled: true,

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
 import 'package:http/http.dart' as http;
-import 'package:fluttertoast/fluttertoast.dart';
+// import 'package:fluttertoast/fluttertoast.dart';
 import '../../api_connection/api_connection.dart';
 import '../model/user.dart';
 import 'login_screen.dart';
@@ -47,7 +47,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
     try {
       if (userName.isEmpty || userEmail.isEmpty || password.isEmpty) {
-        Fluttertoast.showToast(msg: "Error! TextBoxes can't be empty.");
+        // Fluttertoast.showToast(msg: "Error! TextBoxes can't be empty.");
         return;
       }
 
@@ -59,7 +59,7 @@ class _SignupScreenState extends State<SignupScreen> {
       for (var row in mail) {
         String Email = row.assoc()['email'] ?? '';
         if (userEmail == Email) {
-          Fluttertoast.showToast(msg: "Email is already registered.");
+          // Fluttertoast.showToast(msg: "Email is already registered.");
           return;
         }
       }
@@ -67,17 +67,17 @@ class _SignupScreenState extends State<SignupScreen> {
       // Registration successful, you might want to navigate to another screen
       if (registrationResult == 1) {
         print('User registered successfully');
-        Fluttertoast.showToast(msg: "User registered successfully");
+        // Fluttertoast.showToast(msg: "User registered successfully");
         Get.off(LoginScreen());
       } else {
         // Registration failed, show an error message
         print('User registration failed');
-        Fluttertoast.showToast(msg: "User registration failed");
+        // Fluttertoast.showToast(msg: "User registration failed");
         // Show an error message to the user
       }
     } catch (e) {
       print('Error during registration: $e');
-      Fluttertoast.showToast(msg: "Error during registration. Please try again.");
+      // Fluttertoast.showToast(msg: "Error during registration. Please try again.");
     }
   }
 
