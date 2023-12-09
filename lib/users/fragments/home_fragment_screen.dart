@@ -102,6 +102,7 @@ class _HomeFragmentScreenState extends State<HomeFragmentScreen> {
             price: int.tryParse(product.assoc()['price'].toString()) ?? 0,
           );
         }).toList();
+        print('Products fetched successfully: $products');
       });
     } catch (e) {
       print('Error fetching products: $e');
@@ -110,14 +111,16 @@ class _HomeFragmentScreenState extends State<HomeFragmentScreen> {
 
   void filterProducts() {
     String query = searchController.text.toLowerCase();
+    print('Filtering products with query: $query');
+
     setState(() {
       filteredProducts = products.where((product) {
-        return product.productName.toLowerCase().contains(query) ||
-            product.brand.toLowerCase().contains(query) ||
-            product.details.toLowerCase().contains(query);
+        return product.productName.toLowerCase().contains(query);
       }).toList();
     });
   }
+
+
 
   Widget bannerContainer({required String imagePath}) {
     return Container(
@@ -180,24 +183,14 @@ class _HomeFragmentScreenState extends State<HomeFragmentScreen> {
   }
 
   Widget buildProducts() {
-    if (filteredProducts.isNotEmpty) {
+    List<Product> displayProducts = filteredProducts.isNotEmpty ? filteredProducts : products;
+
+    if (displayProducts.isNotEmpty) {
       return SingleChildScrollView(
         child: Wrap(
           spacing: 16,
           runSpacing: 16,
-          children: filteredProducts.map((product) {
-            return ProductItem(
-              product: product,
-            );
-          }).toList(),
-        ),
-      );
-    } else if (products.isNotEmpty) {
-      return SingleChildScrollView(
-        child: Wrap(
-          spacing: 16,
-          runSpacing: 16,
-          children: products.map((product) {
+          children: displayProducts.map((product) {
             return ProductItem(
               product: product,
             );
@@ -208,6 +201,7 @@ class _HomeFragmentScreenState extends State<HomeFragmentScreen> {
       return Text('No products available.');
     }
   }
+
 
   @override
   Widget build(BuildContext context) {

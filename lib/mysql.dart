@@ -8,7 +8,8 @@ import 'package:ecommerce/users/fragments/order_fragment_screen.dart';
 import 'package:mysql_client/mysql_client.dart';
 
 class Mysql {
-  static String host = '10.0.2.2';//for emulator
+  static String host = '10.0.2.2'; //for emulator
+  //   static String host = '172.16.70.42';
   static String user = 'root';
   static String password = 'zohaib';
   static String db = 'ecommerce';
@@ -35,7 +36,10 @@ class Mysql {
     return results.rows;
   }
 
-  Future<int> registerUser(String userName, String userEmail, String password) async {
+
+
+  Future<int> registerUser(String userName, String userEmail,
+      String password) async {
     var conn = await getConnection();
     try {
       await conn.connect();
@@ -63,23 +67,26 @@ class Mysql {
       return 0; // Return 0 to indicate failure
     }
   }
-  Future<int> addProduct(String productName, String brand, String details, String size, int price, Uint8List productImage) async {
+
+  Future<int> addProduct(String productName, String brand, String details,
+      String size, int price) async {
     var conn = await getConnection();
     try {
       await conn.connect();
 
       var stmt = await conn.prepare(
-        'INSERT INTO ecommerce.product (product_name, brand, details, Size, price, product_image) VALUES (?, ?, ?, ?, ?, ?)',
+        'INSERT INTO ecommerce.product (product_name, brand, details, Size, price) VALUES (?, ?, ?, ?, ?)',
       );
 
-      var result = await stmt.execute([productName, brand, details, size, price, productImage]);
+      var result = await stmt.execute(
+          [productName, brand, details, size, price]);
 
-      await stmt.deallocate();
+      await stmt.deallocate(); // Corrected method name
       await conn.close();
 
       // Check if the insertion was successful
-      var affectedRowsBigInt = result.affectedRows;
-      if (affectedRowsBigInt != null && affectedRowsBigInt > BigInt.zero) {
+      var affectedRows = result.affectedRows;
+      if (affectedRows != null && affectedRows > BigInt.zero) {
         // Product added successfully
         return 1;
       } else {
@@ -91,6 +98,68 @@ class Mysql {
       return 0; // Return 0 to indicate failure
     }
   }
+
+  Future<int> updateProduct(int productId, String productName, String brand,
+      String details, String size, int price) async {
+    var conn = await getConnection();
+    try {
+      await conn.connect();
+
+      var stmt = await conn.prepare(
+        'UPDATE ecommerce.product SET product_name = ?, brand = ?, details = ?, size = ?, price = ? WHERE product_id = ?',
+      );
+
+      var result = await stmt.execute(
+          [productName, brand, details, size, price, productId]);
+
+      await stmt.deallocate();
+      await conn.close();
+
+      // Check if the update was successful
+      var affectedRows = result.affectedRows;
+      if (affectedRows != null && affectedRows > BigInt.zero) {
+        // Product updated successfully
+        return 1;
+      } else {
+        // Product update failed
+        return 0;
+      }
+    } catch (e) {
+      print('Error updating product: $e');
+      return 0; // Return 0 to indicate failure
+    }
+  }
+
+  Future<int> deleteProduct(int productId) async {
+    var conn = await getConnection();
+    try {
+      await conn.connect();
+
+      var stmt = await conn.prepare(
+        'DELETE FROM ecommerce.product WHERE product_id = ?',
+      );
+
+      var result = await stmt.execute([productId]);
+
+      await stmt.deallocate();
+      await conn.close();
+
+      // Check if the deletion was successful
+      var affectedRows = result.affectedRows;
+      if (affectedRows != null && affectedRows > BigInt.zero) {
+        // Product deleted successfully
+        return 1;
+      } else {
+        // Product deletion failed
+        return 0;
+      }
+    } catch (e) {
+      print('Error deleting product: $e');
+      return 0; // Return 0 to indicate failure
+    }
+  }
+
+
 // Ensure to import the async library
 
   Future<int> addToCart(CartItem cart) async {
@@ -105,8 +174,10 @@ class Mysql {
       var result = await stmt.execute([
         cart.userId,
         cart.productId,
-        cart.price * cart.quantity, // Assuming total_bill is calculated as price * quantity
-        'Pending', // Order status can be set as 'Pending' by default
+        cart.price * cart.quantity,
+        // Assuming total_bill is calculated as price * quantity
+        'Pending',
+        // Order status can be set as 'Pending' by default
         cart.cusAddress,
         cart.cusPhoneNo,
         cart.quantity,
@@ -181,7 +252,8 @@ class Mysql {
 
       var results = await stmt.execute([userId]);
 
-      var cartItems = results.map((row) => CartItem.fromMapWithProduct(row as Map<String, dynamic>)).toList();
+      var cartItems = results.map((row) =>
+          CartItem.fromMapWithProduct(row as Map<String, dynamic>)).toList();
 
       await stmt.deallocate();
       return cartItems;
@@ -193,54 +265,96 @@ class Mysql {
     }
   }
 
-
-
-
-
-  // Future<List<Map<String, dynamic>>> getProducts() async {
-  //   var conn = await getConnection();
-  //
-  //   await conn.connect();
-  //   var stmt = await conn.prepare(
-  //     'SELECT product_id, product_name, brand, details, Size, price FROM product;',
-  //   );
-  //   await conn.query('USE ecommerce'); // Change to your database name
-  //   var results = await conn.query('SELECT product_id, product_name, brand, details, Size, price FROM product;');
-  //   await conn.close();
-  //
-  //   return results.map((row) {
-  //     return {
-  //       'productId': row['product_id'],
-  //       'productName': row['product_name'],
-  //       'brand': row['brand'],
-  //       'details': row['details'],
-  //       'size': row['Size'],
-  //       'price': row['price'],
-  //     };
-  //   }).toList();
-  // }
-
-  Future<int> placeOrder(int customerID, int restaurantID, int price) async {
+  Future<int> saveCustomerDetails(int userId, String userName, String userEmail, String userPassword, String address, String phoneNo, String gender) async {
     var conn = await getConnection();
-    await conn.connect();
-    var stmt = await conn.prepare(
-        'INSERT INTO Orders (customer_id, restaurant_id, price) VALUES (?, ?, ?)');
-    await stmt.execute([customerID, restaurantID, price]);
-    await stmt.deallocate();
-    conn.close();
-    var db = Mysql();
-    Iterable<ResultSetRow> rows = await db.getResults(
-        'SELECT order_id, name, status, price FROM Orders INNER JOIN Restaurant ON Orders.restaurant_id=Restaurant.restaurant_id WHERE customer_id=$customerID ORDER BY placed_at DESC LIMIT 1;');
-    int orderID = 0;
-    if (rows.length == 1) {
-      for (var row in rows) {
-        orderID = int.parse(row.assoc()['order_id']!);
+    try {
+      await conn.connect();
+
+      var stmt = await conn.prepare('''
+      INSERT INTO customer (user_id, user_name, email, password, Address, Phone_no, Gender)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+      ON DUPLICATE KEY UPDATE
+      Address = ?,
+      Phone_no = ?,
+      Gender = ?;
+    ''');
+
+      var result = await stmt.execute([
+        userId,
+        userName,
+        userEmail,
+        userPassword,
+        address,
+        phoneNo,
+        gender,
+        address, // Duplicate key update
+        phoneNo, // Duplicate key update
+        gender, // Duplicate key update
+      ]);
+
+      await stmt.deallocate();
+      await conn.close();
+      print([
+        userId,
+        userName,
+        userEmail,
+        userPassword,
+        address,
+        phoneNo,
+        gender,
+        address, // Duplicate key update
+        phoneNo, // Duplicate key update
+        gender, // Duplicate key update
+      ]);
+
+
+      // Check if the insertion or update was successful
+      var affectedRows = result.affectedRows;
+      if (affectedRows != null && affectedRows > BigInt.zero) {
+        // Customer details saved successfully
+        return 1;
+      } else {
+        // Customer details saving failed
+        return 0;
       }
+    } catch (e) {
+      print('Error saving customer details: $e');
+      return 0; // Return 0 to indicate failure
     }
-    return orderID;
   }
 
 
-}
+  Future<void> savePaymentDetails(int userId, double totalBill, String paymentMethod) async {
+    var conn = await getConnection();
+    await conn.connect();
+    try {
+      print('Before START TRANSACTION');
+      await conn.execute('START TRANSACTION');
+      print('After START TRANSACTION');
 
-// }
+      // Insert payment details
+      var stmt = await conn.prepare('''
+      INSERT INTO ecommerce.Payments (user_id, TotalBill, payment_method)
+      VALUES (?, ?, ?);
+    ''');
+      print('Before execute');
+      var result = await stmt.execute([userId, totalBill, paymentMethod]);
+      print('After execute');
+
+      // Commit the transaction
+      await conn.execute('COMMIT');
+    } catch (e) {
+      print('Error saving payment details: $e');
+      // Rollback the transaction in case of an error
+      print("RESULT FAILED");
+      await conn.execute('ROLLBACK');
+      rethrow; // Rethrow the caught exception to propagate it up the call stack
+    } finally {
+      // Close the connection
+      await conn.close();
+    }
+  }
+
+
+  }
+

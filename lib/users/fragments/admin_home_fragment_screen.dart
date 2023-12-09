@@ -1,12 +1,12 @@
 // admin_home_fragment_screen.dart
 
 import 'dart:async';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:ecommerce/mysql.dart';
 import 'add_product_screen.dart';
-import 'home_fragment_screen.dart';
 import 'product_details_screen.dart';
+import 'update_product_screen.dart'; // Import the UpdateProductScreen
+import 'delete_product_screen.dart'; // Import the DeleteProductScreen
 import 'product.dart';
 
 class AdminHomeFragmentScreen extends StatefulWidget {
@@ -60,11 +60,8 @@ class _AdminHomeFragmentScreenState extends State<AdminHomeFragmentScreen> {
             details: product.assoc()['details']?.toString() ?? '',
             size: product.assoc()['size']?.toString() ?? '',
             price: int.tryParse(product.assoc()['price'].toString()) ?? 0,
-            // productImagePath:
-            // product.assoc()['product_image_path']?.toString() ?? '',
           );
         }).toList();
-
       });
     } catch (e) {
       print('Error fetching products: $e');
@@ -138,9 +135,21 @@ class _AdminHomeFragmentScreenState extends State<AdminHomeFragmentScreen> {
           runSpacing: 16,
           children: products.map((product) {
             return ProductItem(
-              imagePath: 'lib/assets/images/woman.png',
-              // image: FileImage(File(product.productImagePath)),
               product: product,
+              imagePath: 'lib/assets/images/image${product.productId}.jpg',
+              onUpdate: () {
+                // Navigate to UpdateProductScreen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => UpdateProductScreen(product: product),
+                  ),
+                );
+              },
+              onDelete: () {
+                // Navigate to DeleteProductScreen
+                _navigateToDeleteProduct(product);
+              },
             );
           }).toList(),
         ),
@@ -149,6 +158,21 @@ class _AdminHomeFragmentScreenState extends State<AdminHomeFragmentScreen> {
       return Text('No products available.');
     }
   }
+
+  void _navigateToDeleteProduct(Product product) async {
+    bool productDeleted = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DeleteProductScreen(products: [product]),
+      ),
+    );
+    if (productDeleted) {
+      // Product was deleted, update the product list
+      fetchProducts();
+    }
+  }
+
+
 
   void _navigateToAddProduct() {
     Navigator.push(
@@ -199,8 +223,15 @@ class _AdminHomeFragmentScreenState extends State<AdminHomeFragmentScreen> {
 class ProductItem extends StatelessWidget {
   final Product product;
   final String imagePath;
+  final VoidCallback onUpdate;
+  final VoidCallback onDelete;
 
-  ProductItem({required this.product, required this.imagePath});
+  ProductItem({
+    required this.product,
+    required this.imagePath,
+    required this.onUpdate,
+    required this.onDelete,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -223,7 +254,7 @@ class ProductItem extends StatelessWidget {
               height: 120,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage(imagePath), // Use the provided imagePath here
+                  image: AssetImage(imagePath),
                   fit: BoxFit.cover,
                 ),
                 borderRadius: BorderRadius.circular(10),
@@ -234,12 +265,24 @@ class ProductItem extends StatelessWidget {
               product.productName,
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
             ),
+            SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: onUpdate,
+                  child: Text('Update'),
+                ),
+                SizedBox(width: 8),
+                ElevatedButton(
+                  onPressed: onDelete,
+                  child: Text('Delete'),
+                ),
+              ],
+            ),
           ],
         ),
       ),
     );
   }
 }
-
-
-

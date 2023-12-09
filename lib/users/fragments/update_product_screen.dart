@@ -1,12 +1,19 @@
+// update_product_screen.dart
+
+import 'package:ecommerce/users/fragments/product.dart';
 import 'package:flutter/material.dart';
 import 'package:ecommerce/mysql.dart';
 
-class AddProductScreen extends StatefulWidget {
+class UpdateProductScreen extends StatefulWidget {
+  final Product product;
+
+  UpdateProductScreen({required this.product});
+
   @override
-  _AddProductScreenState createState() => _AddProductScreenState();
+  _UpdateProductScreenState createState() => _UpdateProductScreenState();
 }
 
-class _AddProductScreenState extends State<AddProductScreen> {
+class _UpdateProductScreenState extends State<UpdateProductScreen> {
   late TextEditingController productNameController;
   late TextEditingController brandController;
   late TextEditingController detailsController;
@@ -16,14 +23,14 @@ class _AddProductScreenState extends State<AddProductScreen> {
   @override
   void initState() {
     super.initState();
-    productNameController = TextEditingController();
-    brandController = TextEditingController();
-    detailsController = TextEditingController();
-    sizeController = TextEditingController();
-    priceController = TextEditingController();
+    productNameController = TextEditingController(text: widget.product.productName);
+    brandController = TextEditingController(text: widget.product.brand);
+    detailsController = TextEditingController(text: widget.product.details);
+    sizeController = TextEditingController(text: widget.product.size);
+    priceController = TextEditingController(text: widget.product.price.toString());
   }
 
-  void _saveProduct() async {
+  void _updateProduct() async {
     // Validate form fields
     if (productNameController.text.isEmpty ||
         brandController.text.isEmpty ||
@@ -31,14 +38,15 @@ class _AddProductScreenState extends State<AddProductScreen> {
         sizeController.text.isEmpty ||
         priceController.text.isEmpty) {
       // Show an error message or handle validation as needed
-      print("Failed to enter products");
+      print("Failed to update product");
       return;
     }
 
-    // Save product to database
+    // Update product in the database
     try {
       var mysql = Mysql();
-      var result = await mysql.addProduct(
+      var result = await mysql.updateProduct(
+        widget.product.productId,
         productNameController.text,
         brandController.text,
         detailsController.text,
@@ -47,31 +55,14 @@ class _AddProductScreenState extends State<AddProductScreen> {
       );
 
       if (result == 1) {
-        // Product saved successfully
-        // Clear form fields
-        setState(() {
-          productNameController.clear();
-          brandController.clear();
-          detailsController.clear();
-          sizeController.clear();
-          priceController.clear();
-        });
-
-        // You can also show a success message if needed
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Product saved successfully!'),
-            duration: Duration(seconds: 2),
-          ),
-        );
-
+        // Product updated successfully
         // Optionally, navigate back
         Navigator.pop(context);
       } else {
         // Handle error, show an error message or log the error
       }
     } catch (e) {
-      print('Error saving product: $e');
+      print('Error updating product: $e');
       // Show a user-friendly error message or log the error for further investigation
     }
   }
@@ -80,7 +71,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Product'),
+        title: Text('Update Product'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -111,8 +102,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
               ),
               SizedBox(height: 16),
               ElevatedButton(
-                onPressed: _saveProduct,
-                child: Text('Save Product'),
+                onPressed: _updateProduct,
+                child: Text('Update Product'),
               ),
             ],
           ),

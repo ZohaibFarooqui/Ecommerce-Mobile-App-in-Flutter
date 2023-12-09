@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../mysql.dart';
 import '../userPreferences/current_user.dart';
+import 'checkout.dart';
 
 class OrderFragmentScreen extends StatefulWidget {
   final int userId;
@@ -70,7 +71,8 @@ class _OrderFragmentScreenState extends State<OrderFragmentScreen> {
                       height: 120,
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage('lib/assets/images/image${order['product_id']}.jpg'),
+                          image: AssetImage(
+                              'lib/assets/images/image${order['product_id']}.jpg'),
                           fit: BoxFit.cover,
                         ),
                         borderRadius: BorderRadius.circular(10),
@@ -82,7 +84,8 @@ class _OrderFragmentScreenState extends State<OrderFragmentScreen> {
             )
           else
             Center(
-              child: Text('No orders available.', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+              child: Text('No orders available.',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
             ),
           SizedBox(height: 16),
           ElevatedButton(
@@ -100,18 +103,42 @@ class _OrderFragmentScreenState extends State<OrderFragmentScreen> {
   }
 
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Order Screen', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+        title: Text('Order Screen', style: TextStyle(color: Colors.black,
+            fontWeight: FontWeight.bold)),
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
       ),
-      body: buildOrders(),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            buildOrders(),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                // Check if there are orders before proceeding to checkout
+                if (orders.isNotEmpty) {
+                  // Navigate to the checkout screen
+                  Get.to(() => CheckoutScreen(orders: orders));
+                } else {
+                  // Show a message that there are no orders to checkout
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                          'No orders available to proceed to checkout.'),
+                    ),
+                  );
+                }
+              },
+              child: Text('Proceed to Checkout'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -48,6 +48,7 @@ dev_dependencies:
   mysql1: ^0.20.0
   mysql_client: ^0.0.27
   image_picker: ^1.0.4
+  another_flushbar: ^1.12.30
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -80,6 +81,21 @@ flutter:
     - lib/assets/images/image1.jpg
     - lib/assets/images/image2.jpg
     - lib/assets/images/image3.jpg
+    - lib/assets/images/image4.jpg
+    - lib/assets/images/image5.jpg
+    - lib/assets/images/image6.jpg
+    - lib/assets/images/image7.jpg
+    - lib/assets/images/image8.jpg
+    - lib/assets/images/image10.jpg
+    - lib/assets/images/image11.jpg
+    - lib/assets/images/image13.jpg
+    - lib/assets/images/image14.jpg
+    - lib/assets/images/image26.jpg
+    - lib/assets/images/image27.jpg
+    - lib/assets/images/image28.jpg
+    - lib/assets/images/image29.jpg
+    - lib/assets/images/image30.jpg
+
 
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg

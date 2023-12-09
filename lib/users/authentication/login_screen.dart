@@ -14,6 +14,9 @@ import 'package:http/http.dart' as http;
 import 'package:ecommerce/users/fragments/dashboard_of_fragments.dart';
 import '../../api_connection/api_connection.dart';
 import '../model/user.dart';
+import 'package:another_flushbar/flushbar.dart';
+import 'package:another_flushbar/flushbar_helper.dart';
+import 'package:another_flushbar/flushbar_route.dart';
 import 'package:mysql_client/mysql_client.dart';
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -53,12 +56,24 @@ class _LoginScreenState extends State<LoginScreen> {
             _currentUser.setUser(loggedInUser);
 
             // Fluttertoast.showToast(msg: "Login Successfully.");
+            Flushbar(
+              message: 'Login Successfully.',
+              duration: Duration(seconds: 3), // Set the duration for how long the Flushbar should be visible
+              backgroundColor: Colors.red, // You can customize the background color
+            )..show(context);
             Get.off(DashboardOfFragments());
             break;
           }
         }
       } else {
-        // Fluttertoast.showToast(msg: "Email or password cannot be empty.");
+        Flushbar(
+          message: 'Email or password cannot be empty.',
+          duration: Duration(seconds: 3), // Set the duration for how long the Flushbar should be visible
+          backgroundColor: Colors.red, // You can customize the background color
+        )..show(context);
+
+        // Fluttertoast.showToast(msg: "Email or password cannot be empty.")
+        // /;
       }
     } catch (e) {
       print('Error: $e');

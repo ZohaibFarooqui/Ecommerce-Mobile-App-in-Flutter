@@ -4,6 +4,7 @@ import 'package:ecommerce/users/authentication/admin_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
+import 'package:another_flushbar/flushbar.dart';
 import 'package:http/http.dart' as http;
 // import 'package:fluttertoast/fluttertoast.dart';
 import '../../api_connection/api_connection.dart';
@@ -67,16 +68,34 @@ class _SignupScreenState extends State<SignupScreen> {
       // Registration successful, you might want to navigate to another screen
       if (registrationResult == 1) {
         print('User registered successfully');
+
+        Flushbar(
+          message: 'User registered successfully.',
+          duration: Duration(seconds: 3), // Set the duration for how long the Flushbar should be visible
+          backgroundColor: Colors.red, // You can customize the background color
+        )..show(context);
         // Fluttertoast.showToast(msg: "User registered successfully");
         Get.off(LoginScreen());
       } else {
         // Registration failed, show an error message
         print('User registration failed');
+
+        Flushbar(
+          message: 'User registeraion failed.',
+          duration: Duration(seconds: 3), // Set the duration for how long the Flushbar should be visible
+          backgroundColor: Colors.red, // You can customize the background color
+        )..show(context);
         // Fluttertoast.showToast(msg: "User registration failed");
         // Show an error message to the user
       }
     } catch (e) {
       print('Error during registration: $e');
+
+      Flushbar(
+        message: 'Error During Registeration.',
+        duration: Duration(seconds: 3), // Set the duration for how long the Flushbar should be visible
+        backgroundColor: Colors.red, // You can customize the background color
+      )..show(context);
       // Fluttertoast.showToast(msg: "Error during registration. Please try again.");
     }
   }
