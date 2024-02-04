@@ -8,10 +8,10 @@ import 'package:ecommerce/users/fragments/order_fragment_screen.dart';
 import 'package:mysql_client/mysql_client.dart';
 
 class Mysql {
-  static String host = '10.0.2.2'; //for emulator
-  //   static String host = '172.16.70.42';
-  static String user = 'root';
-  static String password = 'zohaib';
+  // static String host = '10.0.2.2'; //for emulator
+    static String host = '192.168.43.111';
+  static String user = 'monty';
+  static String password = 'some_pass';
   static String db = 'ecommerce';
 
   static int port = 3306;

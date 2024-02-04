@@ -64,6 +64,13 @@ class _LoginScreenState extends State<LoginScreen> {
             Get.off(DashboardOfFragments());
             break;
           }
+          else{
+            Flushbar(
+              message: 'Incorrect Email or Password.',
+              duration: Duration(seconds: 3), // Set the duration for how long the Flushbar should be visible
+              backgroundColor: Colors.red, // You can customize the background color
+            )..show(context);
+          }
         }
       } else {
         Flushbar(
@@ -72,7 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
           backgroundColor: Colors.red, // You can customize the background color
         )..show(context);
 
-        // Fluttertoast.showToast(msg: "Email or password cannot be empty.")
+        //Fluttertoast.showToast(msg: "Email or password cannot be empty.")
         // /;
       }
     } catch (e) {

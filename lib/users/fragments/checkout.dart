@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:ecommerce/mysql.dart';
 import '../userPreferences/current_user.dart';
 import 'dashboard_of_fragments.dart';
+import 'package:another_flushbar/flushbar.dart';
 
 class OrderService {
   final Mysql _mysql;
@@ -173,6 +174,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       actions: [
         ElevatedButton(
           onPressed: () async {
+            Flushbar(
+              message: 'Error adding product to cart!',
+              duration: Duration(seconds: 3), // Set the duration for how long the Flushbar should be visible
+              backgroundColor: Colors.red, // You can customize the background color
+            )..show(context);
             await _completeOrder();
           },
           child: Text('Place Order'),
@@ -209,7 +215,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       widget.orders.clear();
       Get.back(); // Close payment details or customer details dialog
       Get.back(); // Close total bill dialog
-      // Get.offAll(() => DashboardOfFragments());
+      Get.offAll(() => DashboardOfFragments());
     } catch (e) {
       print('Error completing order: $e');
 

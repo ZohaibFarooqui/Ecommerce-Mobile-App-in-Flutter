@@ -6,6 +6,9 @@ import 'package:get/get.dart';
 import '../userPreferences/current_user.dart';
 import 'Cart.dart';
 import 'favorites.dart';
+import 'package:another_flushbar/flushbar.dart';
+
+
 
 class ProductDetailsScreen extends StatefulWidget {
   final Product product;
@@ -34,9 +37,23 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
       // Call the existing addToCart function
       await Mysql().addToCart(cartItem);
+
       print('Product added to cart successfully!');
+
+      Flushbar(
+        message: 'Product added to cart successfully!',
+        duration: Duration(seconds: 3), // Set the duration for how long the Flushbar should be visible
+        backgroundColor: Colors.red, // You can customize the background color
+      )..show(context);
+
     } catch (e) {
       print('Error adding product to cart: $e');
+      Flushbar(
+        message: 'Error adding product to cart!',
+        duration: Duration(seconds: 3), // Set the duration for how long the Flushbar should be visible
+        backgroundColor: Colors.red, // You can customize the background color
+      )..show(context);
+
     }
   }
 
@@ -52,11 +69,21 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       await Mysql().addToFavorites(favoritesItem);
 
       print('Product added to favorites successfully!');
+      Flushbar(
+        message: 'Product added to favorites succesfully',
+        duration: Duration(seconds: 3), // Set the duration for how long the Flushbar should be visible
+        backgroundColor: Colors.red, // You can customize the background color
+      )..show(context);
       setState(() {
         isFavorite = !isFavorite;
       });
     } catch (e) {
       print('Error adding product to favorites: $e');
+      Flushbar(
+        message: 'Error adding products to the favorites',
+        duration: Duration(seconds: 3), // Set the duration for how long the Flushbar should be visible
+        backgroundColor: Colors.red, // You can customize the background color
+      )..show(context);
     }
   }
 

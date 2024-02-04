@@ -48,6 +48,11 @@ class _SignupScreenState extends State<SignupScreen> {
 
     try {
       if (userName.isEmpty || userEmail.isEmpty || password.isEmpty) {
+        Flushbar(
+          message: 'Error! TextBoxes cant be empty.',
+          duration: Duration(seconds: 3), // Set the duration for how long the Flushbar should be visible
+          backgroundColor: Colors.red, // You can customize the background color
+        )..show(context);
         // Fluttertoast.showToast(msg: "Error! TextBoxes can't be empty.");
         return;
       }
@@ -60,14 +65,22 @@ class _SignupScreenState extends State<SignupScreen> {
       for (var row in mail) {
         String Email = row.assoc()['email'] ?? '';
         if (userEmail == Email) {
+          Flushbar(
+            message: 'Email is already Registered.',
+            duration: Duration(seconds: 3), // Set the duration for how long the Flushbar should be visible
+            backgroundColor: Colors.red, // You can customize the background color
+          )..show(context);
+
           // Fluttertoast.showToast(msg: "Email is already registered.");
-          return;
+
+
         }
       }
+      //Get.off(LoginScreen());
 
       // Registration successful, you might want to navigate to another screen
       if (registrationResult == 1) {
-        print('User registered successfully');
+        //print('User registered successfully');
 
         Flushbar(
           message: 'User registered successfully.',
@@ -77,6 +90,7 @@ class _SignupScreenState extends State<SignupScreen> {
         // Fluttertoast.showToast(msg: "User registered successfully");
         Get.off(LoginScreen());
       } else {
+
         // Registration failed, show an error message
         print('User registration failed');
 
@@ -100,68 +114,7 @@ class _SignupScreenState extends State<SignupScreen> {
     }
   }
 
-  //registerUser(nameController, emailController, passwordController)
-  //   userEmail = emailController.text;
-  //   userName  = nameController.text;
-  //   password = passwordController.text;
-  //
-  //   try {
-  //     var mysql = Mysql();
-  //     // Check if the email is already registered
-  //     var mail = await mysql.getResults('select * from ecommerce.user;');
-  //     for (var row in mail) {
-  //       String Email = row.assoc()['email'] ?? '';
-  //       if (userEmail == Email) {
-  //         Fluttertoast.showToast(msg: "Email is already registered.");
-  //         return;
-  //       }
-  //     }
-  //
-  //     // Register the user
-  //     await mysql.executeQuery(
-  //       'INSERT INTO ecommerce.user (user_name, email, password) VALUES (?, ?, ?)',
-  //       [userName, userEmail, password],
-  //     );
-  //
-  //     Fluttertoast.showToast(msg: "User registered successfully.");
-  //   } catch (e) {
-  //     print('Error during registration: $e');
-  //     Fluttertoast.showToast(msg: "Error during registration. Please try again.");
-  //   }
-  // }
 
-
-  // Future<void> validateUserEmail(String email) async {
-  //   try {
-  //     var res = await http.post(
-  //       Uri.parse(API.validateEmail), // Replace with your API endpoint
-  //       body: {
-  //         'user_email': emailController.text.trim(),
-  //       },
-  //     );
-  //     print("after response");
-  //     if (res.statusCode == 200) {
-  //       print("200 after response");
-  //       print(res.body);
-  //       var resBodyOfValidateEmail = jsonDecode(res.body);
-  //
-  //       if (resBodyOfValidateEmail['emailFound'] == true) {
-  //         Fluttertoast.showToast(msg: "Email is already in use");
-  //         setState(() {
-  //           nameController.clear();
-  //           emailController.clear();
-  //           passwordController.clear();
-  //         });
-  //       } else {
-  //         // Handle successful registration or other logic here
-  //         registerAndSaveUserRecord();
-  //       }
-  //     }
-  //   } catch (e) {
-  //     print(e.toString());
-  //     Fluttertoast.showToast(msg: e.toString());
-  //   }
-  // }
 
 
   // registerAndSaveUserRecord() async {

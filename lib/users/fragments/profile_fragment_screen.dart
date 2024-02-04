@@ -19,7 +19,24 @@ class _ProfileFragmentScreenState extends State<ProfileFragmentScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text("Profile"),
+        automaticallyImplyLeading: false,
+
+        elevation: 0,
+        centerTitle: true,
+        backgroundColor: Colors.blue,
+        title: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(),
+              child: Text(
+                "Profile",
+                style: TextStyle(
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -32,11 +49,17 @@ class _ProfileFragmentScreenState extends State<ProfileFragmentScreen> {
             ),
             SizedBox(height: 20),
             GetBuilder<CurrentUser>(
-              builder: (currentUser) => userInfoItemProfile(Icons.person, currentUser.user?.user_name ?? ""),
+              builder: (currentUser) => userInfoItemProfile(
+                Icons.person,
+                currentUser.user?.user_name ?? "",
+              ),
             ),
             SizedBox(height: 20),
             GetBuilder<CurrentUser>(
-              builder: (currentUser) => userInfoItemProfile(Icons.email, currentUser.user?.user_email ?? ""),
+              builder: (currentUser) => userInfoItemProfile(
+                Icons.email,
+                currentUser.user?.user_email ?? "",
+              ),
             ),
             SizedBox(height: 20),
             ElevatedButton(
@@ -87,9 +110,10 @@ class _ProfileFragmentScreenState extends State<ProfileFragmentScreen> {
         backgroundColor: Colors.grey,
         title: const Text(
           "Logout",
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold,),
         ),
-        content: const Text("Are You Sure?\nyou want to logout from the app?"),
+        content: const Text(
+            "Are You Sure?\nyou want to logout from the app?"),
         actions: [
           TextButton(
             onPressed: () {

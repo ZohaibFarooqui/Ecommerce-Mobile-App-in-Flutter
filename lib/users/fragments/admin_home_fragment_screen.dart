@@ -111,18 +111,37 @@ class _AdminHomeFragmentScreenState extends State<AdminHomeFragmentScreen> {
   AppBar buildAppBar() {
     return AppBar(
       backgroundColor: Colors.white,
+      automaticallyImplyLeading: false,
       elevation: 0,
       centerTitle: true,
-      title: Row(
-        children: [
-          Text(
-            "Admin Home",
-            style: TextStyle(
-              color: Colors.black,
+      title: Padding(
+        padding: const EdgeInsets.only(),
+        child: Row(
+          children: [
+
+            IconButton(
+              icon: Icon(Icons.menu, color: Colors.black),
+              onPressed: () {
+                print('press');
+                // Handle menu button press
+              },
             ),
-          ),
-          Spacer(),
-        ],
+            Spacer(),
+
+            Padding(
+              padding: const EdgeInsets.only(right: 100),
+              child: Text(
+                "Admin Home",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+
+            //Spacer(),
+          ],
+        ),
       ),
     );
   }
@@ -196,11 +215,22 @@ class _AdminHomeFragmentScreenState extends State<AdminHomeFragmentScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Welcome to Admin Home",
+                "Welcome to ",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 25,
                   color: Colors.grey,
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(0, 3, 0, 0),
+                child: Text(
+                  "Admin Home Screen",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30,
+                    color: Colors.black,
+                  ),
                 ),
               ),
               SizedBox(height: 20),

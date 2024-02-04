@@ -27,8 +27,8 @@ class ProductItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
-              width: 120,
-              height: 120,
+              width: 130,
+              height: 130,
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage('lib/assets/images/image${product.productId}.jpg'),
@@ -140,7 +140,7 @@ class _HomeFragmentScreenState extends State<HomeFragmentScreen> {
     return Column(
       children: [
         Container(
-          width: 325,
+          width: 350,
           height: 160,
           child: PageView(
             controller: _pageController,
@@ -158,27 +158,52 @@ class _HomeFragmentScreenState extends State<HomeFragmentScreen> {
 
   AppBar buildAppBar() {
     return AppBar(
+      automaticallyImplyLeading: false,
       backgroundColor: Colors.white,
       elevation: 0,
       centerTitle: true,
-      title: Row(
-        children: [
-          IconButton(
-            icon: Icon(Icons.menu, color: Colors.black),
-            onPressed: () {
-              // Handle menu button press
-            },
-          ),
-          Spacer(),
-          Text(
-            "Home",
-            style: TextStyle(
-              color: Colors.black,
+      // title: const Center(
+      //   child:Padding(
+      //     padding: EdgeInsets.only(right: 250),
+      //     child: Text(
+      //       "Home",
+      //       style: TextStyle(
+      //         color: Colors.black,
+      //       ),
+      //     ),
+      //   ),
+      // ),
+
+      title: Padding(
+        padding: const EdgeInsets.only(),
+        child: Row(
+          children: [
+
+              IconButton(
+                icon: Icon(Icons.menu, color: Colors.black),
+                onPressed: () {
+                  print('press');
+                  // Handle menu button press
+                },
+              ),
+           Spacer(),
+
+              Padding(
+                padding: const EdgeInsets.only(right: 135),
+                child: Text(
+                  "Home",
+                  style: TextStyle(
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+
+            //Spacer(),
+          ],
             ),
-          ),
-          Spacer(),
-        ],
       ),
+
+
     );
   }
 
@@ -240,11 +265,12 @@ class _HomeFragmentScreenState extends State<HomeFragmentScreen> {
                   controller: searchController,
                   decoration: InputDecoration(
                     fillColor: Colors.grey.shade100,
+
                     filled: true,
                     hintText: 'Search Your Item',
                     prefixIcon: Icon(Icons.search),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(25),
+                      borderRadius: BorderRadius.circular(30),
                     ),
                   ),
                 ),
